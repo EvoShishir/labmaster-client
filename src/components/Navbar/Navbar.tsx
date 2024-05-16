@@ -1,39 +1,11 @@
-import axios from "axios";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CustomButton from "../Core/CustomButton/CustomButton";
 import Image from "next/image";
-
-type user = {
-  name: {
-    first: string;
-    last: string;
-  };
-  picture: {
-    thumbnail: string;
-  };
-};
+import useFindUser from "@/hooks/UseFindUser";
 
 export default function Navbar() {
-  const [user, setUser] = useState<user>();
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  const fetchUser = async () => {
-    const { data } = await axios.get("https://randomuser.me/api/");
-    const userData: user = {
-      name: {
-        first: data.results[0].name.first,
-        last: data.results[0].name.last,
-      },
-      picture: {
-        thumbnail: data.results[0].picture.thumbnail,
-      },
-    };
-    setUser(userData);
-  };
+  const user = useFindUser();
 
   return (
     <section className="max-w-[1100px] m-auto">
@@ -43,7 +15,7 @@ export default function Navbar() {
           <span className="text-blue-800">MASTER</span>
         </Link>
         <div className="justify-center">
-          {user && user.picture.thumbnail ? (
+          {user ? (
             <div className="flex items-center gap-2">
               <Image
                 src={user.picture.thumbnail}
@@ -56,7 +28,7 @@ export default function Navbar() {
                 <h3>
                   {user.name.first} {user.name.last}
                 </h3>
-                <button className="bg-red-500 rounded text-white w-24 transition 400ms justify-end hover:bg-red-800">
+                <button className="bg-red-500 rounded text-white w-24 transition 400ms ease-in-out justify-end hover:bg-red-800">
                   Logout
                 </button>
               </div>

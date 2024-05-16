@@ -1,15 +1,19 @@
-import Navbar from "@/components/Navbar/Navbar";
+import Layout from "@/components/Layout/Layout";
 import { Rubik } from "next/font/google";
+import React from "react";
 
 const rubik = Rubik({ subsets: ["latin"] });
 
-export default function Home() {
+type Props = {};
+
+export default function Homepage({}: Props) {
   return (
-    <main className={` ${rubik.className}`}>
-      <Navbar />
-      <div>
-        <h1></h1>
-      </div>
-    </main>
+    <section className={`${rubik.className}`}>
+      <Layout>
+        <div className="grid">
+          <h1>Upcoming Lab Classes</h1>
+        </div>
+      </Layout>
+    </section>
   );
 }

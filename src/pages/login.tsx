@@ -1,7 +1,9 @@
 import CustomButton from "@/components/Core/CustomButton/CustomButton";
-import Navbar from "@/components/Navbar/Navbar";
+import { Rubik } from "next/font/google";
 import Link from "next/link";
 import React, { FormEvent, useState } from "react";
+
+const rubik = Rubik({ subsets: ["latin"] });
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -9,14 +11,14 @@ const LoginPage = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle login logic here
     console.log("Email:", email);
     console.log("Password:", password);
   };
 
   return (
-    <section className="min-h-screen flex flex-col justify-center">
-      {/* <Navbar /> */}
+    <section
+      className={`${rubik.className} min-h-screen flex flex-col justify-center`}
+    >
       <div className=" text-center">
         <Link href={"/"} className="font-medium text-4xl ">
           <span className="text-green-800">LAB</span>{" "}
@@ -68,7 +70,7 @@ const LoginPage = () => {
             </div>
 
             <div className="flex">
-              <CustomButton text="Sign in" type="submit" />
+              <CustomButton text="Sign in" type="submit" style="w-full" />
             </div>
           </form>
         </div>
