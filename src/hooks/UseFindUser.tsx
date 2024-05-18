@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-type User = {
+export type User = {
   name: {
     first: string;
     last: string;

@@ -7,9 +7,10 @@ const rubik = Rubik({ subsets: ["latin"] });
 
 interface LayoutProps {
   children: ReactNode;
+  sideNumber: number;
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function Layout({ children, sideNumber }: LayoutProps) {
   return (
     <section
       className={`${rubik.className} flex flex-col max-w-[1100px] mx-auto`}
@@ -18,8 +19,8 @@ export default function Layout({ children }: LayoutProps) {
         <Navbar />
       </div>
       <div className="flex mt-6">
-        <div className="min-w-[203px]">
-          <Sidebar />
+        <div className="min-w-[220px]">
+          <Sidebar sideNumber={sideNumber} />
         </div>
         <div>{children}</div>
       </div>
