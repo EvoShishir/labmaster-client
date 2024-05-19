@@ -13,7 +13,7 @@ interface LayoutProps {
 export default function Layout({ children, sideNumber }: LayoutProps) {
   return (
     <section
-      className={`${rubik.className} flex flex-col max-w-[1100px] mx-auto`}
+      className={`${rubik.className} flex flex-col max-w-[1300px] mx-auto`}
     >
       <div>
         <Navbar />
