@@ -19,16 +19,14 @@ function SingleProblem({ user, post, onClick }: Props) {
             {user && (
               <div className="flex items-center gap-3">
                 <Image
-                  src={user.picture.thumbnail}
-                  alt={user.name.first}
+                  src="/dp.png"
+                  alt="dp"
                   height={40}
                   width={40}
                   className="rounded-[50%]"
                 />
                 <div className="flex flex-col">
-                  <h3>
-                    {user.name.first} {user.name.last}
-                  </h3>
+                  <h3>{user.displayName}</h3>
                 </div>
               </div>
             )}

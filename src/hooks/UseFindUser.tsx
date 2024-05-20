@@ -1,18 +1,18 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { findUser } from "@/userActions";
+import { useEffect, useState } from "react";
 
 export type User = {
-  name: {
-    first: string;
-    last: string;
-  };
-  picture: {
-    thumbnail: string;
-  };
+  displayName: string;
 };
 
-const useFindUser = () => {
-  const [user, setUser] = useState<User>();
+type HookResult = {
+  user: User | undefined;
+  error: Error | null;
+};
+
+const useFindUser = (): HookResult => {
+  const [user, setUser] = useState<User | undefined>();
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     fetchUser();
@@ -20,23 +20,19 @@ const useFindUser = () => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get("https://randomuser.me/api/");
-      const userData: User = {
-        name: {
-          first: data.results[0].name.first,
-          last: data.results[0].name.last,
-        },
-        picture: {
-          thumbnail: data.results[0].picture.thumbnail,
-        },
-      };
-      setUser(userData);
-    } catch (error) {
-      console.error("Error fetching user:", error);
+      const userData = await findUser();
+      if (userData) {
+        const { displayName } = userData as User;
+        setUser({ displayName });
+      } else {
+        setUser(undefined);
+      }
+    } catch (err) {
+      setError(err as Error);
     }
   };
 
-  return user;
+  return { user, error };
 };
 
 export default useFindUser;

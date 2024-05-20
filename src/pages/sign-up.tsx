@@ -1,22 +1,12 @@
-import CustomButton from "@/components/Core/CustomButton/CustomButton";
-import { Rubik } from "next/font/google";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import React from "react";
+import { rubik } from "./student-sign-up";
+import CustomButton from "@/components/Core/CustomButton/CustomButton";
 
-const rubik = Rubik({ subsets: ["latin"] });
-
-export default function SignUpPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Role:", role);
+export default function SignUp() {
+  const handleClick = (role: string) => {
+    window.location.href = `/${role}-sign-up`;
   };
-
   return (
     <main
       className={`${rubik.className} min-h-[80vh] flex flex-col justify-center items-center px-4`}
@@ -27,65 +17,22 @@ export default function SignUpPage() {
           <span className="text-blue-800">MASTER</span>
         </Link>
       </div>
-      <h1 className="text-xl font-medium mb-6">Sign up</h1>
-      <form className="w-full max-w-md" onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="password"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="role"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Role
-          </label>
-          <select
-            id="role"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            required
-          >
-            <option value="">Select your role</option>
-            <option value="student">Student</option>
-            <option value="teacher">Teacher</option>
-          </select>
-        </div>
-        <div className="flex justify-center">
-          <CustomButton text="Sign up" type="submit" style="w-full" />
-        </div>
-      </form>
+      <h1 className="text-xl font-medium mb-6">
+        Are you a student or teacher?
+      </h1>
+
+      <div className="grid grid-cols-2 justify-center gap-5">
+        <CustomButton
+          text="Student"
+          onClick={() => handleClick("student")}
+          style="w-full"
+        />
+        <CustomButton
+          text="Teacher"
+          onClick={() => handleClick("teacher")}
+          style="w-full"
+        />
+      </div>
     </main>
   );
 }

@@ -1,7 +1,10 @@
 import CustomButton from "@/components/Core/CustomButton/CustomButton";
+import { auth } from "@/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { Rubik } from "next/font/google";
 import Link from "next/link";
 import React, { FormEvent, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const rubik = Rubik({ subsets: ["latin"] });
 
@@ -11,14 +14,32 @@ const LoginPage = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
+    toast.promise(
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          window.location.href = "/";
+          // ...
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          throw new Error(`${errorMessage}`);
+        }),
+      {
+        loading: "Logging in...",
+        success: <b>Login successful!</b>,
+        error: (err) => <b>{err.message}</b>,
+      }
+    );
   };
 
   return (
     <section
       className={`${rubik.className} min-h-screen flex flex-col justify-center`}
     >
+      <Toaster />
       <div className=" text-center">
         <Link href={"/"} className="font-medium text-4xl ">
           <span className="text-green-800">LAB</span>{" "}
@@ -26,13 +47,14 @@ const LoginPage = () => {
         </Link>
       </div>
 
-      <div className=" flex items-center justify-center bg-gray-50 py-5 px-4 sm:px-6 lg:px-8">
+      <div className=" flex items-center justify-center  py-5 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div>
             <h2 className="mt-6 text-xl font-medium text-gray-900">
               Log in to your account
             </h2>
           </div>
+
           <form className="mt-1 space-y-6" onSubmit={handleSubmit}>
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
@@ -68,6 +90,13 @@ const LoginPage = () => {
                 />
               </div>
             </div>
+
+            <h3>
+              Don&apos;t have an account?{" "}
+              <Link href={"/sign-up"} className="text-blue-700 font-medium">
+                Sign Up
+              </Link>
+            </h3>
 
             <div className="flex">
               <CustomButton text="Sign in" type="submit" style="w-full" />

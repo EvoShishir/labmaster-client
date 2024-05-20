@@ -14,7 +14,7 @@ export type Post = {
 };
 
 function ProblemDiscussion() {
-  const user = useFindUser();
+  const { user } = useFindUser();
 
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
