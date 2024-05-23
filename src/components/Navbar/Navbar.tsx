@@ -4,11 +4,14 @@ import CustomButton from "../Core/CustomButton/CustomButton";
 import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 import { handleLogout } from "@/userActions";
-import useFindUser, { User } from "@/hooks/UseFindUser";
+import useFindUser, { User } from "@/hooks/useFindUser";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
   const { user } = useFindUser();
   const [loggedInUser, setLoggedInUser] = useState<User | undefined>();
+
+  const router = useRouter();
 
   useEffect(() => {
     setLoggedInUser(user);
@@ -17,6 +20,7 @@ export default function Navbar() {
   const handleLogoutClick = () => {
     handleLogout();
     setLoggedInUser(undefined);
+    router.push("/login");
   };
 
   return (

@@ -1,4 +1,4 @@
-import { User } from "@/hooks/UseFindUser";
+import { User } from "@/hooks/useFindUser";
 import { Post } from "@/pages/problem-discussion";
 import Image from "next/image";
 import React from "react";
@@ -16,20 +16,18 @@ function SingleProblem({ user, post, onClick }: Props) {
       <div className="bg-gray-50 border-2 gap-2 p-4 rounded-lg w-full">
         <div className="flex flex-col gap-2 mb-2">
           <div>
-            {user && (
-              <div className="flex items-center gap-3">
-                <Image
-                  src="/dp.png"
-                  alt="dp"
-                  height={40}
-                  width={40}
-                  className="rounded-[50%]"
-                />
-                <div className="flex flex-col">
-                  <h3>{user.displayName}</h3>
-                </div>
+            <div className="flex items-center gap-3">
+              <Image
+                src="/dp.png"
+                alt="dp"
+                height={40}
+                width={40}
+                className="rounded-[50%]"
+              />
+              <div className="flex flex-col">
+                <h3>Random User</h3>
               </div>
-            )}
+            </div>
           </div>
           <h4 className="text-lg font-medium">{post?.title}</h4>
         </div>

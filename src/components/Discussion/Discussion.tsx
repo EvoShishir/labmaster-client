@@ -1,7 +1,7 @@
 import React from "react";
 import CustomButton from "../Core/CustomButton/CustomButton";
 import Image from "next/image";
-import { User } from "@/hooks/UseFindUser";
+import { User } from "@/hooks/useFindUser";
 
 type Props = {
   user: User | undefined;
@@ -31,20 +31,18 @@ const Discussion = ({ user, post, comments }: Props) => {
     <div className="pl-2 border-gray-300">
       <div className="flex flex-col gap-2 border-b-2 py-2">
         <div>
-          {user && (
-            <div className="flex items-center gap-3">
-              <Image
-                src="/dp.png"
-                alt="dp"
-                height={40}
-                width={40}
-                className="rounded-[50%]"
-              />
-              <div className="flex flex-col">
-                <h3>{user.displayName}</h3>
-              </div>
+          <div className="flex items-center gap-3">
+            <Image
+              src="/dp.png"
+              alt="dp"
+              height={40}
+              width={40}
+              className="rounded-[50%]"
+            />
+            <div className="flex flex-col">
+              <h3>Random User</h3>
             </div>
-          )}
+          </div>
         </div>
         <h4 className="text-2xl font-medium">{post.title}</h4>
       </div>

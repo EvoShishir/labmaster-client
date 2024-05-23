@@ -8,11 +8,13 @@ export type User = {
 type HookResult = {
   user: User | undefined;
   error: Error | null;
+  isLoading: boolean;
 };
 
 const useFindUser = (): HookResult => {
   const [user, setUser] = useState<User | undefined>();
   const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchUser();
@@ -29,10 +31,12 @@ const useFindUser = (): HookResult => {
       }
     } catch (err) {
       setError(err as Error);
+    } finally {
+      setIsLoading(false); // Ensure loading state is updated
     }
   };
 
-  return { user, error };
+  return { user, error, isLoading };
 };
 
 export default useFindUser;
