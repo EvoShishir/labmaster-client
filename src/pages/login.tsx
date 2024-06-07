@@ -1,5 +1,6 @@
 import CustomButton from "@/components/Core/CustomButton/CustomButton";
 import { auth } from "@/firebase";
+import axios from "axios";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Rubik } from "next/font/google";
 import Link from "next/link";
@@ -16,10 +17,10 @@ const LoginPage = () => {
     e.preventDefault();
     toast.promise(
       signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then((userCredential: any) => {
           // Signed in
           const user = userCredential.user;
-          console.log(user);
+          localStorage.setItem("labmaster_uid", user.uid);
           window.location.href = "/";
           // ...
         })

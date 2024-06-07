@@ -1,5 +1,6 @@
 import CustomButton from "@/components/Core/CustomButton/CustomButton";
 import { auth } from "@/firebase";
+import axios from "axios";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { Rubik } from "next/font/google";
 import Link from "next/link";
@@ -8,18 +9,15 @@ import toast, { Toaster } from "react-hot-toast";
 
 export const rubik = Rubik({ subsets: ["latin"] });
 
-export default function TeacherSignUpPage() {
+export default function StudentSignUpPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [idNumber, setIdNumber] = useState("");
+  const [rollNumber, setRollNumber] = useState("");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Full Name:", fullName);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("ID Number:", idNumber);
+
     toast.promise(
       createUserWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
@@ -28,6 +26,18 @@ export default function TeacherSignUpPage() {
           updateProfile(user, {
             displayName: fullName,
           });
+
+          const baseURL = window.location.origin;
+          await axios.post(`${baseURL}/api/users`, {
+            uid: userCredential.user.uid,
+            name: fullName,
+            email: email,
+            roll: rollNumber,
+            role: "Teacher",
+          });
+
+          localStorage.setItem("labmaster_uid", user.uid);
+          localStorage.setItem("labmaster_role", "teacher");
 
           return (window.location.href = "/");
         })
@@ -109,21 +119,22 @@ export default function TeacherSignUpPage() {
         </div>
         <div className="mb-4">
           <label
-            htmlFor="idNumber"
+            htmlFor="rollNumber"
             className="block text-gray-700 text-sm font-bold mb-2"
           >
-            Teacher ID
+            Teacher Identification Number
           </label>
           <input
             type="text"
-            id="idNumber"
+            id="rollNumber"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Enter your identification number"
-            value={idNumber}
-            onChange={(e) => setIdNumber(e.target.value)}
+            placeholder="Enter your roll number"
+            value={rollNumber}
+            onChange={(e) => setRollNumber(e.target.value)}
             required
           />
         </div>
+
         <div className="flex justify-center">
           <CustomButton text="Sign up" type="submit" style="w-full" />
         </div>

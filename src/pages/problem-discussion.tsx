@@ -69,7 +69,7 @@ function ProblemDiscussion() {
                 </div>
               )}
               {singlePost.data ? (
-                <div className="col-span-2">
+                <div className="col-span-2 max-h-[80vh] overflow-y-scroll">
                   <Discussion
                     user={user}
                     post={singlePost.data}

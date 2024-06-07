@@ -1,9 +1,10 @@
 import CustomButton from "@/components/Core/CustomButton/CustomButton";
 import { auth } from "@/firebase";
+import axios from "axios";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { Rubik } from "next/font/google";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 export const rubik = Rubik({ subsets: ["latin"] });
@@ -13,17 +14,29 @@ export default function StudentSignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rollNumber, setRollNumber] = useState("");
-  const [batchNumber, setBatchNumber] = useState("");
-  const [department, setDepartment] = useState("");
+  const [semester, setSemester] = useState("");
+  const [departments, setDepartments] = useState<
+    { _id: string; name: string }[]
+  >([]);
+
+  useEffect(() => {
+    fetchSemesters();
+  }, []);
+
+  const fetchSemesters = async () => {
+    try {
+      const baseURL = window.location.origin;
+
+      const { data } = await axios.get(`${baseURL}/api/semesters`);
+      setDepartments(data.semesters);
+    } catch (error) {
+      console.error("Error fetching semesters:", error);
+    }
+  };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Full Name:", fullName);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Roll Number:", rollNumber);
-    console.log("Batch Number:", batchNumber);
-    console.log("Department:", department);
+
     toast.promise(
       createUserWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
@@ -32,6 +45,19 @@ export default function StudentSignUpPage() {
           updateProfile(user, {
             displayName: fullName,
           });
+
+          const baseURL = window.location.origin;
+          await axios.post(`${baseURL}/api/users`, {
+            uid: userCredential.user.uid,
+            name: fullName,
+            email: email,
+            roll: rollNumber,
+            semesterId: semester,
+            role: "Student",
+          });
+
+          localStorage.setItem("labmaster_uid", user.uid);
+          localStorage.setItem("labmaster_role", "student");
 
           return (window.location.href = "/");
         })
@@ -128,42 +154,29 @@ export default function StudentSignUpPage() {
             required
           />
         </div>
+
         <div className="mb-4">
           <label
-            htmlFor="batchNumber"
+            htmlFor="semester"
             className="block text-gray-700 text-sm font-bold mb-2"
           >
-            Batch Number
-          </label>
-          <input
-            type="text"
-            id="batchNumber"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Enter your batch number"
-            value={batchNumber}
-            onChange={(e) => setBatchNumber(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="department"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Department
+            Semester
           </label>
           <select
-            id="department"
+            id="semester"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
+            value={semester}
+            onChange={(e) => setSemester(e.target.value)}
             required
           >
             <option value="" disabled>
-              Select your department
+              Select your semester
             </option>
-            <option value="CSE">CSE</option>
-            <option value="ECE">ECE</option>
+            {departments.map((dept) => (
+              <option key={dept._id} value={dept._id}>
+                {dept.name}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex justify-center">

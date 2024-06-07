@@ -21,12 +21,13 @@ export default function Navbar() {
     handleLogout();
     setLoggedInUser(undefined);
     router.push("/login");
+    localStorage.clear();
   };
 
   return (
     <section className="max-w-[1300px] m-auto">
       <Toaster />
-      <div className="flex items-center justify-between mt-7 shadow-md p-3">
+      <div className="flex items-center justify-between shadow-md p-3">
         <Link href={"/"} className="font-medium text-2xl">
           <span className="text-green-800">LAB</span>{" "}
           <span className="text-blue-800">MASTER</span>
