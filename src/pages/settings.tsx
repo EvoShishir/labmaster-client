@@ -19,6 +19,7 @@ function Settings({}: Props) {
     roll: "",
   });
   const [semesters, setSemesters] = useState([]);
+  const [isTeacher, setIsTeacher] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -32,6 +33,9 @@ function Settings({}: Props) {
       const uid = localStorage.getItem("labmaster_uid"); // Adjust if UID is stored elsewhere
       const baseURL = window.location.origin;
       const { data } = await axios.get(`${baseURL}/api/users?uid=${uid}`);
+      if (data.user.role === "Teacher") {
+        setIsTeacher(true);
+      }
       setUserData({
         name: data.user.name,
         semesterId: data.user.semester,
@@ -91,77 +95,126 @@ function Settings({}: Props) {
     <ProtectedRoute>
       <section className={`${rubik.className}`}>
         <Layout sideNumber={4}>
-          <div className="flex justify-center items-center">
-            <form
-              className="w-full max-w-lg bg-white p-8 "
-              onSubmit={handleSubmit}
-            >
-              <h1 className="text-2xl font-semibold mb-6">User Settings</h1>
+          {isTeacher ? (
+            <div className="flex justify-center items-center">
+              <form
+                className="w-full max-w-lg bg-white p-8 "
+                onSubmit={handleSubmit}
+              >
+                <h1 className="text-2xl font-semibold mb-6">User Settings</h1>
 
-              <div className="mb-4">
-                <label
-                  htmlFor="name"
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={userData.name}
-                  onChange={handleChange}
-                  className="w-full border rounded py-2 px-3 text-sm focus:outline-none focus:border-blue-400"
-                  required
-                />
-              </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="name"
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                  >
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={userData.name}
+                    onChange={handleChange}
+                    className="w-full border rounded py-2 px-3 text-sm focus:outline-none focus:border-blue-400"
+                    required
+                  />
+                </div>
 
-              <div className="mb-4">
-                <label
-                  htmlFor="roll"
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                >
-                  Roll Number
-                </label>
-                <input
-                  type="number"
-                  id="roll"
-                  value={userData.roll}
-                  onChange={handleChange}
-                  className="w-full border rounded py-2 px-3 text-sm focus:outline-none focus:border-blue-400"
-                  required
-                />
-              </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="roll"
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                  >
+                    Teacher Identification Number
+                  </label>
+                  <input
+                    type="number"
+                    id="roll"
+                    value={userData.roll}
+                    onChange={handleChange}
+                    className="w-full border rounded py-2 px-3 text-sm focus:outline-none focus:border-blue-400"
+                    required
+                  />
+                </div>
 
-              <div className="mb-4">
-                <label
-                  htmlFor="semesterId"
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                >
-                  Semester
-                </label>
-                <select
-                  id="semesterId"
-                  value={userData.semesterId}
-                  onChange={handleChange}
-                  className="w-full border rounded py-2 px-3 text-sm focus:outline-none focus:border-blue-400"
-                  required
-                >
-                  <option value="" disabled>
-                    Select your semester
-                  </option>
-                  {semesters.map((semester: any) => (
-                    <option key={semester._id} value={semester._id}>
-                      {semester.name}
+                <div className="flex justify-center">
+                  <CustomButton text="Update" type="submit" style="w-full" />
+                </div>
+              </form>
+            </div>
+          ) : (
+            <div className="flex justify-center items-center">
+              <form
+                className="w-full max-w-lg bg-white p-8 "
+                onSubmit={handleSubmit}
+              >
+                <h1 className="text-2xl font-semibold mb-6">User Settings</h1>
+
+                <div className="mb-4">
+                  <label
+                    htmlFor="name"
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                  >
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={userData.name}
+                    onChange={handleChange}
+                    className="w-full border rounded py-2 px-3 text-sm focus:outline-none focus:border-blue-400"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label
+                    htmlFor="roll"
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                  >
+                    Roll Number
+                  </label>
+                  <input
+                    type="number"
+                    id="roll"
+                    value={userData.roll}
+                    onChange={handleChange}
+                    className="w-full border rounded py-2 px-3 text-sm focus:outline-none focus:border-blue-400"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label
+                    htmlFor="semesterId"
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                  >
+                    Semester
+                  </label>
+                  <select
+                    id="semesterId"
+                    value={userData.semesterId}
+                    onChange={handleChange}
+                    className="w-full border rounded py-2 px-3 text-sm focus:outline-none focus:border-blue-400"
+                    required
+                  >
+                    <option value="" disabled>
+                      Select your semester
                     </option>
-                  ))}
-                </select>
-              </div>
+                    {semesters.map((semester: any) => (
+                      <option key={semester._id} value={semester._id}>
+                        {semester.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              <div className="flex justify-center">
-                <CustomButton text="Update" type="submit" style="w-full" />
-              </div>
-            </form>
-          </div>
+                <div className="flex justify-center">
+                  <CustomButton text="Update" type="submit" style="w-full" />
+                </div>
+              </form>
+            </div>
+          )}
         </Layout>
       </section>
     </ProtectedRoute>
