@@ -28,14 +28,25 @@ export default function Homepage({}: Props) {
     router.push("/problem-discussion");
   };
 
-  const getUserData = async (uid: any) => {
-    const baseURL = window.location.origin;
-    const { data } = await axios.get(`${baseURL}/api/users?uid=${uid}`);
-    if (data.user.role === "Teacher") {
-      setIsTeacher(true);
-      setUid(data.user.uid);
+  const getUserData = async (uid: string | null) => {
+    if (!uid) {
+      setIsLoading(false);
+      return;
     }
-    setIsLoading(false);
+    try {
+      const baseURL = window.location.origin;
+      const { data } = await axios.get(`${baseURL}/api/users?uid=${uid}`);
+      if (data.user) {
+        if (data.user.role === "Teacher") {
+          setIsTeacher(true);
+        }
+        setUid(data.user.uid);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
