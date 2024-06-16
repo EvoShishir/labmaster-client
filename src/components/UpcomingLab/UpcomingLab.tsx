@@ -4,19 +4,17 @@ import React, { useEffect, useState } from "react";
 
 function UpcomingLab({ uid, isTeacher }: any) {
   const [classes, setClasses] = useState([]);
-  console.log(uid);
 
   useEffect(() => {
     if (isTeacher) {
       fetchTeacherClasses(uid);
     } else {
-      fetchStudentClasses();
+      fetchStudentClasses(uid);
     }
-    console.log(isTeacher);
   }, []);
 
-  const fetchStudentClasses = async () => {
-    const { data } = await axios.get("/api/classes");
+  const fetchStudentClasses = async (uid: String) => {
+    const { data } = await axios.get(`/api/classes?uid=${uid}`);
     setClasses(data.classes);
   };
 
@@ -48,9 +46,10 @@ function UpcomingLab({ uid, isTeacher }: any) {
             </div>
             <div className="px-3">
               <h1 className="font-medium text-lg">
-                {singleClass.createdBy.name}
+                Teacher: {singleClass.createdBy.name}
               </h1>
               <h3>{singleClass.name}</h3>
+              <strong>{singleClass.semester.name}</strong>
             </div>
           </Link>
         ))}

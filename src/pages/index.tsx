@@ -18,9 +18,9 @@ type Props = {};
 
 export default function Homepage({}: Props) {
   const [isTeacher, setIsTeacher] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [uid, setUid] = useState();
-  const { user } = useFindUser();
+  const [isLoading, setIsLoading] = useState(true);
+  // const { user } = useFindUser();
   const postsData = usePostsData();
   const router = useRouter();
 
@@ -36,7 +36,7 @@ export default function Homepage({}: Props) {
     try {
       const baseURL = window.location.origin;
       const { data } = await axios.get(`${baseURL}/api/users?uid=${uid}`);
-      if (data.user) {
+      if (data?.user) {
         if (data.user.role === "Teacher") {
           setIsTeacher(true);
         }
@@ -92,11 +92,14 @@ export default function Homepage({}: Props) {
                 </h1>
                 {postsData.isLoading && <LoadingSpinner />}
                 {postsData.data && (
-                  <div className="col-span-1 w-full flex justify-center flex-wrap gap-2 max-h-[80vh] overflow-y-scroll">
+                  <div className="col-span-1 w-full flex justify-center flex-wrap gap-2 max-h-[75vh] overflow-y-scroll">
                     {postsData.data.posts.map((post: Post) => (
                       <div key={post.id} className="w-full">
                         <SingleProblem
-                          user={user}
+                          // user={user}
+                          user={{
+                            displayName: "bruh",
+                          }}
                           post={post}
                           onClick={handleClick}
                         />

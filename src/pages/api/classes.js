@@ -45,11 +45,21 @@ export default async function handler(req, res) {
         }
         classes = await Class.find({ createdBy: user._id })
           .populate("createdBy", "name")
-          .populate("semester", "name");
+          .populate("semester", "name")
+          .sort({ date: 1 });
       } else {
-        classes = await Class.find()
+        // Fetch the user from the query parameter if not createdBy
+        const { uid } = req.query;
+        const user = await User.findOne({ uid: uid });
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        // Fetch classes where the user's semester matches the class semester
+        classes = await Class.find({ semester: user.semester })
           .populate("createdBy", "name")
-          .populate("semester", "name");
+          .populate("semester", "name")
+          .sort({ date: 1 });
       }
       res.status(200).json({ classes });
     } catch (error) {
