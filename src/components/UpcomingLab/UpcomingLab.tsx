@@ -33,11 +33,10 @@ function UpcomingLab({ uid, isTeacher }: any) {
 
   return (
     <section>
-      <div className=" flex flex-col gap-3">
+      <div className=" flex flex-col gap-3 max-h-[65vh] overflow-scroll">
         {classes?.map((singleClass: any) => (
-          <Link
+          <div
             key={singleClass._id}
-            href={"#"}
             className="flex items-center w-full bg-green-100 p-3 rounded-md transition 400ms ease-in-out hover:bg-green-300"
           >
             <div className="flex flex-col text-center border-r-2 border-gray-500 px-3">
@@ -51,7 +50,7 @@ function UpcomingLab({ uid, isTeacher }: any) {
               <h3>{singleClass.name}</h3>
               <strong>{singleClass.semester.name}</strong>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </section>

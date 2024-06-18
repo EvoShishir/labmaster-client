@@ -5,12 +5,11 @@ import React from "react";
 import { FaRegComments } from "react-icons/fa";
 
 type Props = {
-  user: User | undefined;
-  post: Post;
+  post: any;
   onClick?: () => void;
 };
 
-function SingleProblem({ user, post, onClick }: Props) {
+function SingleProblem({ post, onClick }: Props) {
   return (
     <div className="flex flex-col gap-3 ">
       <div className="bg-gray-50 border-2 gap-2 p-4 rounded-lg w-full">
@@ -25,11 +24,11 @@ function SingleProblem({ user, post, onClick }: Props) {
                 className="rounded-[50%]"
               />
               <div className="flex flex-col">
-                <h3>Random User</h3>
+                <h3>{post?.createdBy?.name}</h3>
               </div>
             </div>
           </div>
-          <h4 className="text-lg font-medium">{post?.title}</h4>
+          <h4 className="text-lg font-medium">{post?.discussion}</h4>
         </div>
         <button
           onClick={onClick}

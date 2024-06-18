@@ -93,16 +93,9 @@ export default function Homepage({}: Props) {
                 {postsData.isLoading && <LoadingSpinner />}
                 {postsData.data && (
                   <div className="col-span-1 w-full flex justify-center flex-wrap gap-2 max-h-[75vh] overflow-y-scroll">
-                    {postsData.data.posts.map((post: Post) => (
-                      <div key={post.id} className="w-full">
-                        <SingleProblem
-                          // user={user}
-                          user={{
-                            displayName: "bruh",
-                          }}
-                          post={post}
-                          onClick={handleClick}
-                        />
+                    {postsData.data.discussions.map((problem: any) => (
+                      <div key={problem._id} className="w-full">
+                        <SingleProblem post={problem} onClick={handleClick} />
                       </div>
                     ))}
                   </div>

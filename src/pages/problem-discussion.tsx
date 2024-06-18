@@ -1,3 +1,4 @@
+import CustomButton from "@/components/Core/CustomButton/CustomButton";
 import LoadingSpinner from "@/components/Core/LoadingSpinner/LoadingSpinner";
 import Discussion from "@/components/Discussion/Discussion";
 import Layout from "@/components/Layout/Layout";
@@ -15,8 +16,6 @@ export type Post = {
 };
 
 function ProblemDiscussion() {
-  const { user } = useFindUser();
-
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
   const postsData = usePostsData();
@@ -25,7 +24,9 @@ function ProblemDiscussion() {
     queryKey: ["singlePost", selectedPostId],
     queryFn: async ({ queryKey }) => {
       const id = queryKey[1];
-      const res = await axios.get(`https://dummyjson.com/posts/${id}`);
+      const res = await axios.get(
+        `/api/discussion?discussionId=${selectedPostId}`
+      );
       return res.data;
     },
     enabled: !!selectedPostId,
@@ -35,7 +36,8 @@ function ProblemDiscussion() {
     queryKey: ["postComments", selectedPostId],
     queryFn: async ({ queryKey }) => {
       const id = queryKey[1];
-      const res = await axios.get(`https://dummyjson.com/posts/${id}/comments`);
+      const res = await axios.get(`/api/comments?postId=${selectedPostId}`);
+      console.log(res.data);
       return res.data;
     },
     enabled: !!selectedPostId,
@@ -53,12 +55,18 @@ function ProblemDiscussion() {
           {postsData.data ? (
             <div className="grid grid-cols-3 gap-3">
               <div className="col-span-1 w-full flex justify-center flex-wrap gap-2 max-h-[80vh] overflow-y-scroll">
-                {postsData.data.posts.map((post: Post) => (
-                  <div key={post.id} className="w-full">
+                <CustomButton
+                  style="w-full"
+                  text="Post your Problem"
+                  onClick={() => {
+                    window.location.href = "/create-discussion";
+                  }}
+                />
+                {postsData.data.discussions.map((problem: any) => (
+                  <div key={problem._id} className="w-full">
                     <SingleProblem
-                      user={user}
-                      post={post}
-                      onClick={() => handleClick(post.id)}
+                      post={problem}
+                      onClick={() => handleClick(problem._id)}
                     />
                   </div>
                 ))}
@@ -71,7 +79,6 @@ function ProblemDiscussion() {
               {singlePost.data ? (
                 <div className="col-span-2 max-h-[80vh] overflow-y-scroll">
                   <Discussion
-                    user={user}
                     post={singlePost.data}
                     comments={postComments.data?.comments}
                   />

@@ -14,6 +14,13 @@ export default async function handler(req, res) {
         return res.status(404).json({ message: "Class not found" });
       }
 
+      const existingAttendance = await Attendance.findOne({ classId: classId });
+      if (existingAttendance) {
+        return res
+          .status(400)
+          .json({ message: "Class already has attendance" });
+      }
+
       let attendance = new Attendance({
         classId,
         attendees,
@@ -47,23 +54,26 @@ export default async function handler(req, res) {
       res.status(500).json({ message: "Error updating attendance", error });
     }
   } else if (req.method === "GET") {
-    const { classId } = req.query;
+    const { attendanceId } = req.query;
 
     try {
-      if (classId) {
-        const attendance = await Attendance.findOne({
-          classId: classId,
-        })
+      if (attendanceId) {
+        const attendance = await Attendance.findById(attendanceId)
           .populate({
             path: "classId",
-            select: "name date time", // Specify the fields to populate
-
-            populate: {
-              path: "semester",
-              select: "name",
-            },
+            select: "name date time createdBy", // Specify the fields to populate
+            populate: [
+              {
+                path: "createdBy",
+                select: "name",
+              },
+              {
+                path: "semester",
+                select: "name",
+              },
+            ],
           })
-          .populate("attendees", "name");
+          .populate("attendees", "name roll");
         if (!attendance) {
           return res.status(404).json({ message: "Attendance not found" });
         }
@@ -73,11 +83,16 @@ export default async function handler(req, res) {
           .populate({
             path: "classId",
             select: "name date time", // Specify the fields to populate
-
-            populate: {
-              path: "semester",
-              select: "name",
-            },
+            populate: [
+              {
+                path: "createdBy",
+                select: "name",
+              },
+              {
+                path: "semester",
+                select: "name",
+              },
+            ],
           })
           .populate("attendees", "name");
         res.status(200).json({ attendances });
