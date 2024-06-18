@@ -34,9 +34,7 @@ const CreateAttendance: React.FC<Props> = () => {
   console.log(filteredUsers);
 
   const fetchClasses = async (uid: any) => {
-    const { data } = await axios.get(
-      `http://localhost:3000/api/classes?createdBy=${uid}`
-    );
+    const { data } = await axios.get(`/api/classes?createdBy=${uid}`);
     const sortedClasses = data.classes.sort((a: any, b: any) => {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
@@ -44,7 +42,7 @@ const CreateAttendance: React.FC<Props> = () => {
   };
 
   const fetchUsers = async () => {
-    const { data } = await axios.get("http://localhost:3000/api/users");
+    const { data } = await axios.get("/api/users");
     setUsers(data.users);
     console.log(data.users);
   };
@@ -84,7 +82,7 @@ const CreateAttendance: React.FC<Props> = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/api/attendance", {
+      await axios.post("/api/attendance", {
         classId: selectedClass,
         attendees: selectedUsers,
       });
