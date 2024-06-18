@@ -2,6 +2,7 @@ import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute";
 import React, { useState, useEffect } from "react";
 import Layout from "@/components/Layout/Layout";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function CreateClass() {
   const [name, setName] = useState("");
@@ -38,9 +39,12 @@ export default function CreateClass() {
         date: date,
       });
 
+      toast.success("Class created");
+
       console.log("Class created:", response.data);
       window.location.href = "/";
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(`${error.message} ${error.response.data.message}`);
       console.error("Error creating class:", error);
     }
   };

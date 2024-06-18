@@ -6,7 +6,6 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     const { name } = req.body;
-    console.log(name);
     await Semester.create({ name });
     res.status(201).json({ message: "POST request processed" });
   } else if (req.method === "GET") {

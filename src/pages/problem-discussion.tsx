@@ -37,7 +37,7 @@ function ProblemDiscussion() {
     queryFn: async ({ queryKey }) => {
       const id = queryKey[1];
       const res = await axios.get(`/api/comments?postId=${selectedPostId}`);
-      console.log(res.data);
+
       return res.data;
     },
     enabled: !!selectedPostId,

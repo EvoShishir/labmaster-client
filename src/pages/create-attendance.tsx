@@ -31,8 +31,6 @@ const CreateAttendance: React.FC<Props> = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<UserType[]>([]);
 
-  console.log(filteredUsers);
-
   const fetchClasses = async (uid: any) => {
     const { data } = await axios.get(`/api/classes?createdBy=${uid}`);
     const sortedClasses = data.classes.sort((a: any, b: any) => {
@@ -44,7 +42,6 @@ const CreateAttendance: React.FC<Props> = () => {
   const fetchUsers = async () => {
     const { data } = await axios.get("/api/users");
     setUsers(data.users);
-    console.log(data.users);
   };
 
   useEffect(() => {

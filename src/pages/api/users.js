@@ -33,7 +33,6 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "GET") {
     const { uid } = req.query;
-    console.log(uid);
 
     try {
       if (uid) {

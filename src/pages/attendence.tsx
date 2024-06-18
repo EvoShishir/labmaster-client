@@ -1,4 +1,5 @@
 import CustomButton from "@/components/Core/CustomButton/CustomButton";
+import LoadingSpinner from "@/components/Core/LoadingSpinner/LoadingSpinner";
 import Layout from "@/components/Layout/Layout";
 import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute";
 import axios from "axios";
@@ -61,6 +62,7 @@ export default function Attendence({}: Props) {
   const [attendances, setAttendances] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [singleAttendance, setSingleAttendance] = useState<any>();
+  const [isloading, setIsLoading] = useState(true);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -69,6 +71,7 @@ export default function Attendence({}: Props) {
   const fetchAttendance = async () => {
     const { data } = await axios.get("/api/attendance");
     setAttendances(data.attendances);
+    setIsLoading(false);
   };
 
   const fetchAttendanceData = async (attendance: any) => {
@@ -87,45 +90,51 @@ export default function Attendence({}: Props) {
     <ProtectedRoute>
       <div>
         <Layout sideNumber={2}>
-          <CustomModal
-            isOpen={isModalOpen}
-            onClose={toggleModal}
-            attendance={singleAttendance}
-          />
-          <div className="flex flex-col gap-3">
-            <CustomButton
-              text="Add Attendance"
-              onClick={() => {
-                window.location.href = "/create-attendance";
-              }}
-            />
-            {attendances.map((attendance) => (
-              <div
-                onClick={() => {
-                  fetchAttendanceData(attendance._id);
-                }}
-                key={attendance._id}
-                className="grid grid-cols-4 items-center w-full bg-green-100 p-3 rounded-md transition duration-400 ease-in-out hover:bg-green-300"
-              >
-                <div className="flex flex-col text-center border-r border-gray-500 px-3">
-                  <h2 className="text-lg">{attendance?.classId?.time}</h2>
-                  <h2>{attendance?.classId?.date}</h2>
-                </div>
-                <div className="px-3 border-r border-gray-500">
-                  <h1 className="font-medium text-lg">
-                    Teacher: {attendance?.classId?.createdBy?.name}
-                  </h1>
-                  <h3>{attendance?.classId?.name}</h3>
-                </div>
-                <strong className="px-3 border-r border-gray-500">
-                  {attendance?.classId?.semester?.name}
-                </strong>
-                <h1 className="px-3 border-r border-gray-500">
-                  Present: {attendance?.attendees.length}
-                </h1>
+          {isloading ? (
+            <LoadingSpinner />
+          ) : (
+            <>
+              <CustomModal
+                isOpen={isModalOpen}
+                onClose={toggleModal}
+                attendance={singleAttendance}
+              />
+              <div className="flex flex-col gap-3">
+                <CustomButton
+                  text="Add Attendance"
+                  onClick={() => {
+                    window.location.href = "/create-attendance";
+                  }}
+                />
+                {attendances.map((attendance) => (
+                  <div
+                    onClick={() => {
+                      fetchAttendanceData(attendance._id);
+                    }}
+                    key={attendance._id}
+                    className="grid grid-cols-4 items-center w-full bg-green-100 p-3 rounded-md transition duration-400 ease-in-out hover:bg-green-300"
+                  >
+                    <div className="flex flex-col text-center border-r border-gray-500 px-3">
+                      <h2 className="text-lg">{attendance?.classId?.time}</h2>
+                      <h2>{attendance?.classId?.date}</h2>
+                    </div>
+                    <div className="px-3 border-r border-gray-500">
+                      <h1 className="font-medium text-lg">
+                        Teacher: {attendance?.classId?.createdBy?.name}
+                      </h1>
+                      <h3>{attendance?.classId?.name}</h3>
+                    </div>
+                    <strong className="px-3 border-r border-gray-500">
+                      {attendance?.classId?.semester?.name}
+                    </strong>
+                    <h1 className="px-3 border-r border-gray-500">
+                      Present: {attendance?.attendees.length}
+                    </h1>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </Layout>
       </div>
     </ProtectedRoute>
