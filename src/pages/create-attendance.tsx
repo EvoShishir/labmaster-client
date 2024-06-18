@@ -19,6 +19,7 @@ type UserType = {
   _id: string;
   name: string;
   semester: string;
+  roll: number;
 };
 
 type Props = {};
@@ -29,6 +30,8 @@ const CreateAttendance: React.FC<Props> = () => {
   const [selectedClass, setSelectedClass] = useState<string>("");
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<UserType[]>([]);
+
+  console.log(filteredUsers);
 
   const fetchClasses = async (uid: any) => {
     const { data } = await axios.get(
@@ -144,7 +147,9 @@ const CreateAttendance: React.FC<Props> = () => {
                       onChange={handleUserChange}
                       className="mr-2"
                     />
-                    <label htmlFor={user._id}>{user.name}</label>
+                    <label htmlFor={user._id}>
+                      {user.roll} - {user.name}
+                    </label>
                   </div>
                 ))
               ) : (
