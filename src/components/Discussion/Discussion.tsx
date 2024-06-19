@@ -3,11 +3,13 @@ import CustomButton from "../Core/CustomButton/CustomButton";
 import Image from "next/image";
 import axios from "axios";
 import toast from "react-hot-toast";
+import LoadingSpinner from "../Core/LoadingSpinner/LoadingSpinner";
 
 const Discussion = ({ post }: any) => {
   const [uid, setUid] = useState<string | null>(null);
   const [body, setBody] = useState<string>("");
   const [comments, setComments] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -18,7 +20,7 @@ const Discussion = ({ post }: any) => {
 
   useEffect(() => {
     fetchComments();
-  }, []);
+  }, [post.discussion._id]);
 
   const fetchComments = async () => {
     try {
@@ -26,6 +28,7 @@ const Discussion = ({ post }: any) => {
         `/api/comments?postId=${post.discussion._id}`
       );
       setComments(data.comments);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching comments:", error);
       toast.error("Error fetching comments");
@@ -70,54 +73,58 @@ const Discussion = ({ post }: any) => {
       </div>
       <div className="mt-5">
         <h1 className="text-gray-600 font-semibold text-xl mb-8">Replies:</h1>
-        <div className="flex flex-col gap-6">
-          {comments?.map((comment: any) => {
-            return (
-              <div key={comment._id} className="flex flex-col gap-2">
-                <div className="flex items-center gap-3">
-                  <Image
-                    src="/dp.png"
-                    alt="dp"
-                    height={30}
-                    width={30}
-                    className="rounded-[50%]"
-                  />
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-semibold">
-                      {comment.createdBy.name}
-                    </h3>
-                    <h4 className="text-xs">
-                      at {new Date(comment.createdAt).toString()}
-                    </h4>
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <div className="flex flex-col gap-6">
+            {comments?.map((comment: any) => {
+              return (
+                <div key={comment._id} className="flex flex-col gap-2">
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src="/dp.png"
+                      alt="dp"
+                      height={30}
+                      width={30}
+                      className="rounded-[50%]"
+                    />
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-semibold">
+                        {comment.createdBy.name}
+                      </h3>
+                      <h4 className="text-xs">
+                        at {new Date(comment.createdAt).toString()}
+                      </h4>
+                    </div>
                   </div>
+                  <p className="text-sm">{comment.comment}</p>
                 </div>
-                <p className="text-sm">{comment.comment}</p>
-              </div>
-            );
-          })}
+              );
+            })}
 
-          <form onSubmit={handleSubmit} className="flex items-start gap-3">
-            <Image
-              src="/dp.png"
-              alt="dp"
-              height={30}
-              width={30}
-              className="rounded-[50%]"
-            />
-            <textarea
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              cols={60}
-              rows={4}
-              className="outline-none border-2 rounded p-3"
-              name="reply"
-              id="body"
-              placeholder="Add a comment..."
-              required
-            />
-            <CustomButton text="Reply" type="submit" />
-          </form>
-        </div>
+            <form onSubmit={handleSubmit} className="flex items-start gap-3">
+              <Image
+                src="/dp.png"
+                alt="dp"
+                height={30}
+                width={30}
+                className="rounded-[50%]"
+              />
+              <textarea
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                cols={60}
+                rows={4}
+                className="outline-none border-2 rounded p-3"
+                name="reply"
+                id="body"
+                placeholder="Add a comment..."
+                required
+              />
+              <CustomButton text="Reply" type="submit" />
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );
