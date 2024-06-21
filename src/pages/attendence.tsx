@@ -16,11 +16,15 @@ const CustomModal: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex">
-      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-l font-medium">
-            Attendance list of {attendance?.classId.name}
+      <div className="relative p-8 bg-white max-w-[1100px] m-auto flex-col flex rounded-lg">
+        <div className="flex justify-between items-center mb-2 border-b border-gray-300">
+          <h2 className="text-l font-medium pr-2">
+            Attendance list of{" "}
+            <span className="font-semibold">
+              {attendance?.classId?.subject?.name}
+            </span>
           </h2>
+
           <button
             onClick={onClose}
             className="text-gray-600 hover:text-gray-800"
@@ -40,6 +44,16 @@ const CustomModal: React.FC<{
               />
             </svg>
           </button>
+        </div>
+        <div className="mb-2 flex items-center gap-2">
+          <p>
+            Date:{" "}
+            <span className="font-medium">{attendance?.classId?.date}</span>
+          </p>
+          <p>
+            Topic:{" "}
+            <span className="font-medium">{attendance?.classId?.topic}</span>
+          </p>
         </div>
         <div className="grid grid-cols-2 border-b border-gray-300 mb-2">
           <h1 className="font-medium text-lg">Roll</h1>
@@ -120,13 +134,13 @@ export default function Attendence({}: Props) {
                     </div>
                     <div className="px-3 border-r border-gray-500">
                       <h1 className="font-medium text-lg">
-                        Teacher: {attendance?.classId?.createdBy?.name}
+                        Teacher: {attendance?.classId?.subject?.teacher?.name}
                       </h1>
-                      <h3>{attendance?.classId?.name}</h3>
+                      <h3>{attendance?.classId?.subject?.name}</h3>
                     </div>
-                    <strong className="px-3 border-r border-gray-500">
-                      {attendance?.classId?.semester?.name}
-                    </strong>
+                    <p className="px-3 border-r border-gray-500">
+                      Topic: <strong>{attendance?.classId?.topic}</strong>
+                    </p>
                     <h1 className="px-3 border-r border-gray-500">
                       Present: {attendance?.attendees.length}
                     </h1>

@@ -5,16 +5,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-type ClassType = {
-  _id: string;
-  name: string;
-  semester: {
-    _id: string;
-    name: string;
-  };
-  date: any;
-};
-
 type UserType = {
   _id: string;
   name: string;
@@ -25,18 +15,27 @@ type UserType = {
 type Props = {};
 
 const CreateAttendance: React.FC<Props> = () => {
-  const [classes, setClasses] = useState<ClassType[]>([]);
+  const [classes, setClasses] = useState<any[]>([]);
+  const [subjects, setSubjects] = useState<any[]>([]);
   const [users, setUsers] = useState<UserType[]>([]);
   const [selectedClass, setSelectedClass] = useState<string>("");
+  const [selectedSubject, setSelectedSubject] = useState<string>("");
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<UserType[]>([]);
 
-  const fetchClasses = async (uid: any) => {
-    const { data } = await axios.get(`/api/classes?createdBy=${uid}`);
-    const sortedClasses = data.classes.sort((a: any, b: any) => {
+  const fetchSubjects = async (uid: any) => {
+    const { data } = await axios.get(`/api/subjects?uid=${uid}`);
+    const sortedSubjects = data.subjects.sort((a: any, b: any) => {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
-    setClasses(sortedClasses);
+    setSubjects(sortedSubjects);
+  };
+
+  const fetchClasses = async () => {
+    const { data } = await axios.get(
+      `/api/classes?subjectId=${selectedSubject}`
+    );
+    setClasses(data.classes);
   };
 
   const fetchUsers = async () => {
@@ -45,23 +44,33 @@ const CreateAttendance: React.FC<Props> = () => {
   };
 
   useEffect(() => {
+    if (selectedSubject) {
+      fetchClasses();
+    }
+  }, [selectedSubject]);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
       const uid = localStorage.getItem("labmaster_uid");
-      fetchClasses(uid);
+      fetchSubjects(uid);
       fetchUsers();
     }
   }, []);
 
   useEffect(() => {
-    if (selectedClass) {
+    if (selectedSubject) {
       const filtered = filterUsersByClassSemester(
         users,
-        classes,
-        selectedClass
+        subjects,
+        selectedSubject
       );
       setFilteredUsers(filtered);
     }
-  }, [selectedClass, users, classes]);
+  }, [selectedSubject, users, subjects]);
+
+  const handleSubjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSubject(e.target.value);
+  };
 
   const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedClass(e.target.value);
@@ -84,7 +93,7 @@ const CreateAttendance: React.FC<Props> = () => {
         attendees: selectedUsers,
       });
       toast.success("Attendance created successfully");
-      window.location.href = "/attendance";
+      window.location.reload();
     } catch (error: any) {
       console.error("Error creating attendance:", error.response.data.message);
       toast.error(`${error.message} ${error.response.data.message}`);
@@ -93,11 +102,11 @@ const CreateAttendance: React.FC<Props> = () => {
 
   const filterUsersByClassSemester = (
     users: UserType[],
-    classes: ClassType[],
+    subjects: any,
     selectedClass: string
   ): UserType[] => {
-    const selectedClassSemester = classes.find(
-      (cls) => cls._id === selectedClass
+    const selectedClassSemester = subjects.find(
+      (subject: any) => subject._id === selectedClass
     )?.semester._id;
 
     return users.filter((user) => user.semester === selectedClassSemester);
@@ -111,6 +120,27 @@ const CreateAttendance: React.FC<Props> = () => {
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label htmlFor="class" className="block mb-2">
+                Select Subject:
+              </label>
+              <select
+                id="class"
+                value={selectedSubject}
+                onChange={handleSubjectChange}
+                className="border border-gray-300 p-2 w-full"
+                required
+              >
+                <option value="" disabled>
+                  --Select Subject--
+                </option>
+                {subjects.map((subject) => (
+                  <option key={subject._id} value={subject._id}>
+                    {subject.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="class" className="block mb-2">
                 Select Class:
               </label>
               <select
@@ -118,13 +148,14 @@ const CreateAttendance: React.FC<Props> = () => {
                 value={selectedClass}
                 onChange={handleClassChange}
                 className="border border-gray-300 p-2 w-full"
+                required
               >
                 <option value="" disabled>
                   --Select Class--
                 </option>
                 {classes.map((cls) => (
                   <option key={cls._id} value={cls._id}>
-                    {cls.name} - {cls.date}
+                    {cls.topic} - {cls.date}
                   </option>
                 ))}
               </select>

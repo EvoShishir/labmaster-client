@@ -32,27 +32,6 @@ export default async function handler(req, res) {
     } catch (error) {
       res.status(500).json({ message: "Error creating attendance", error });
     }
-  } else if (req.method === "PUT") {
-    const { classId, attendees } = req.body;
-
-    try {
-      const existingClass = await Class.findById(classId);
-      if (!existingClass) {
-        return res.status(404).json({ message: "Class not found" });
-      }
-
-      let attendance = await Attendance.findOne({ classId: classId });
-      if (!attendance) {
-        return res.status(404).json({ message: "Attendance not found" });
-      }
-
-      attendance.attendees = attendees;
-      await attendance.save();
-
-      res.status(200).json({ message: "Attendance updated", attendance });
-    } catch (error) {
-      res.status(500).json({ message: "Error updating attendance", error });
-    }
   } else if (req.method === "GET") {
     const { attendanceId } = req.query;
 
@@ -61,15 +40,15 @@ export default async function handler(req, res) {
         const attendance = await Attendance.findById(attendanceId)
           .populate({
             path: "classId",
-            select: "name date time createdBy", // Specify the fields to populate
+            select: "topic date time",
             populate: [
               {
-                path: "createdBy",
-                select: "name",
-              },
-              {
-                path: "semester",
-                select: "name",
+                path: "subject",
+                select: "name teacher",
+                populate: {
+                  path: "teacher",
+                  select: "name",
+                },
               },
             ],
           })
@@ -82,15 +61,15 @@ export default async function handler(req, res) {
         const attendances = await Attendance.find()
           .populate({
             path: "classId",
-            select: "name date time", // Specify the fields to populate
+            select: "topic date time",
             populate: [
               {
-                path: "createdBy",
-                select: "name",
-              },
-              {
-                path: "semester",
-                select: "name",
+                path: "subject",
+                select: "name teacher",
+                populate: {
+                  path: "teacher",
+                  select: "name",
+                },
               },
             ],
           })

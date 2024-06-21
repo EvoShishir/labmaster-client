@@ -2,18 +2,13 @@ import mongoose, { Schema } from "mongoose";
 
 const classSchema = new Schema(
   {
-    name: {
+    subject: {
+      type: Schema.Types.ObjectId,
+      ref: "Subject",
+      required: true,
+    },
+    topic: {
       type: String,
-      required: true,
-    },
-    createdBy: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    semester: {
-      type: Schema.Types.ObjectId,
-      ref: "Semester",
       required: true,
     },
     time: {

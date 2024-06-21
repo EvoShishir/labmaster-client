@@ -77,30 +77,28 @@ const Discussion = ({ post }: any) => {
           <LoadingSpinner />
         ) : (
           <div className="flex flex-col gap-6">
-            {comments?.map((comment: any) => {
-              return (
-                <div key={comment._id} className="flex flex-col gap-2">
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src="/dp.png"
-                      alt="dp"
-                      height={30}
-                      width={30}
-                      className="rounded-[50%]"
-                    />
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-semibold">
-                        {comment.createdBy.name}
-                      </h3>
-                      <h4 className="text-xs">
-                        at {new Date(comment.createdAt).toString()}
-                      </h4>
-                    </div>
+            {comments?.map((comment: any) => (
+              <div key={comment._id} className="flex flex-col gap-2">
+                <div className="flex items-center gap-3">
+                  <Image
+                    src="/dp.png"
+                    alt="dp"
+                    height={30}
+                    width={30}
+                    className="rounded-[50%]"
+                  />
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-semibold">
+                      {comment.createdBy.name}
+                    </h3>
+                    <h4 className="text-xs">
+                      at {new Date(comment.createdAt).toString()}
+                    </h4>
                   </div>
-                  <p className="text-sm">{comment.comment}</p>
                 </div>
-              );
-            })}
+                <p className="text-sm">{comment.comment}</p>
+              </div>
+            ))}
 
             <form onSubmit={handleSubmit} className="flex items-start gap-3">
               <Image

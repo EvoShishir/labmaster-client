@@ -3,11 +3,10 @@ import React, { useState, useEffect } from "react";
 import Layout from "@/components/Layout/Layout";
 import axios from "axios";
 import toast from "react-hot-toast";
+import CustomButton from "@/components/Core/CustomButton/CustomButton";
 
-export default function CreateClass() {
+export default function CreateSubject() {
   const [name, setName] = useState("");
-  const [time, setTime] = useState("");
-  const [date, setDate] = useState("");
   const [semester, setSemester] = useState("");
   const [departments, setDepartments] = useState<
     { _id: string; name: string }[]
@@ -31,21 +30,19 @@ export default function CreateClass() {
     e.preventDefault();
     const createdBy = localStorage.getItem("labmaster_uid");
     try {
-      const response = await axios.post("/api/classes", {
+      const response = await axios.post("/api/subjects", {
         name: name,
         uid: createdBy,
         semesterId: semester,
-        time: time,
-        date: date,
       });
 
-      toast.success("Class created");
+      toast.success("Subject created");
 
-      console.log("Class created:", response.data);
+      console.log("Subject created:", response.data);
       window.location.href = "/";
     } catch (error: any) {
       toast.error(`${error.message} ${error.response.data.message}`);
-      console.error("Error creating class:", error);
+      console.error("Error creating Subject:", error);
     }
   };
 
@@ -53,54 +50,20 @@ export default function CreateClass() {
     <ProtectedRoute>
       <section className="container mx-auto px-4">
         <Layout sideNumber={1}>
-          <h2 className="text-2xl font-bold mb-4">Create New Class</h2>
+          <h2 className="text-2xl font-bold mb-4">Create New Subject</h2>
           <form onSubmit={handleSubmit} className="max-w-md mx-auto">
             <div className="mb-4">
               <label
                 htmlFor="className"
                 className="block text-sm font-semibold mb-1"
               >
-                Class Name:
+                Subject Name:
               </label>
               <input
                 type="text"
                 id="className"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full border rounded py-2 px-3 text-sm focus:outline-none focus:border-blue-400"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="classTime"
-                className="block text-sm font-semibold mb-1"
-              >
-                Class Time:
-              </label>
-              <input
-                type="time"
-                id="classTime"
-                value={time}
-                onChange={(e) => {
-                  setTime(e.target.value);
-                }}
-                className="w-full border rounded py-2 px-3 text-sm focus:outline-none focus:border-blue-400"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="classDate"
-                className="block text-sm font-semibold mb-1"
-              >
-                Class Date:
-              </label>
-              <input
-                type="date"
-                id="classDate"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
                 className="w-full border rounded py-2 px-3 text-sm focus:outline-none focus:border-blue-400"
                 required
               />
@@ -129,12 +92,7 @@ export default function CreateClass() {
                 ))}
               </select>
             </div>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-            >
-              Create Class
-            </button>
+            <CustomButton text="Create Subject" type="submit" />
           </form>
         </Layout>
       </section>
